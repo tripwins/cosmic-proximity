@@ -21,9 +21,9 @@ src/main/java/com/cosmicproximity/relay/
 ## Secrets that should never be in version control
 *.pem
 *.env
-scripts/format-discord.sh
-scripts/fix-discord.sh
-scripts/upload-icon.sh
+
+## Operational scripts that may contain or load secrets at runtime
+scripts/
 
 ## Misc
 *.log
