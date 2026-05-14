@@ -1,0 +1,29 @@
+## Build output
+.gradle/
+build/
+out/
+classes/
+run/
+
+## IDE
+.idea/
+*.iml
+.vscode/
+
+## Private relay coordinates — never commit
+src/main/resources/cosmicproximity/relay-local.properties
+
+## Private relay server (standalone). The mod can connect to anything that
+## speaks the protocol in `com/cosmicproximity/net/VoicePackets.java`.
+## Comment the line below if you want to ship the reference relay too.
+src/main/java/com/cosmicproximity/relay/
+
+## Secrets that should never be in version control
+*.pem
+*.env
+scripts/format-discord.sh
+scripts/fix-discord.sh
+scripts/upload-icon.sh
+
+## Misc
+*.log

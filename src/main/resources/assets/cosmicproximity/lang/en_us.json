@@ -1,0 +1,13 @@
+{
+  "key.categories.cosmicproximity": "Cosmic Proximity",
+  "key.cosmicproximity.push_to_talk": "Push to Talk",
+  "key.cosmicproximity.toggle_mute": "Toggle Mute",
+  "key.cosmicproximity.toggle_deafen": "Toggle Deafen",
+  "key.cosmicproximity.open_settings": "Open Voice Settings",
+  "cosmicproximity.status.muted": "Microphone muted",
+  "cosmicproximity.status.unmuted": "Microphone active",
+  "cosmicproximity.status.deafened": "Audio deafened",
+  "cosmicproximity.status.undeafened": "Audio enabled",
+  "cosmicproximity.status.connected": "Voice connected (%d ms)",
+  "cosmicproximity.status.disconnected": "Voice disconnected"
+}

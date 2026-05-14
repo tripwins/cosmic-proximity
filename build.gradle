@@ -1,0 +1,114 @@
+plugins {
+    id 'fabric-loom' version "${loom_version}"
+    id 'java'
+    id 'com.gradleup.shadow' version '8.3.5'
+}
+
+configurations {
+    // Bundled into the relay jar only — never the mod jar.
+    relayShade {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+loom {
+    splitEnvironmentSourceSets()
+
+    mods {
+        "cosmicproximity" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://jitpack.io' }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // JDA (Discord bot) — used only by the standalone relay program.
+    // compileOnly so it doesn't pollute the mod jar; relayShade bundles it into cosmic-relay.jar.
+    compileOnly 'net.dv8tion:JDA:5.2.1'
+    relayShade  'net.dv8tion:JDA:5.2.1'
+    relayShade  'org.slf4j:slf4j-simple:2.0.13'
+}
+
+processResources {
+    inputs.property "version", project.version
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archives_base_name}" }
+    }
+}
+
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+/**
+ * Standalone voice relay jar. Bundles JDA + transitive deps so a single
+ * cosmic-relay-<version>.jar runs anywhere with JDK 21+:
+ *   java -jar cosmic-relay-<version>.jar --port 24454 --password mysecret
+ */
+tasks.register('relayJar', ShadowJar) {
+    group = 'build'
+    description = 'Builds the standalone voice relay server jar.'
+    archiveBaseName = 'cosmic-relay'
+    archiveVersion = project.mod_version
+    archiveClassifier = ''
+
+    dependsOn classes
+
+    from(sourceSets.main.output) {
+        include 'com/cosmicproximity/relay/**'
+        include 'com/cosmicproximity/net/CryptoUtil*.class'
+        include 'com/cosmicproximity/net/SecureUdpEnvelope*.class'
+        include 'com/cosmicproximity/net/UdpTransport*.class'
+        include 'com/cosmicproximity/net/VoicePackets*.class'
+    }
+
+    configurations = [project.configurations.relayShade]
+
+    exclude 'META-INF/*.SF'
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+    exclude 'module-info.class'
+
+    manifest {
+        attributes(
+                'Main-Class': 'com.cosmicproximity.relay.RelayMain',
+                'Implementation-Title': 'Cosmic Proximity Voice Relay',
+                'Implementation-Version': project.mod_version
+        )
+    }
+}
+
+build.dependsOn relayJar

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "cosmicproximity",
+  "version": "${version}",
+  "name": "Cosmic Proximity",
+  "description": "Proximity voice chat for Minecraft. Hear nearby players, fade with distance.",
+  "authors": ["You"],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.cosmicproximity.CosmicProximity"],
+    "client": ["com.cosmicproximity.client.CosmicProximityClient"]
+  },
+  "mixins": [
+    "cosmicproximity.mixins.json",
+    {
+      "config": "cosmicproximity.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.0",
+    "fabric-api": "*",
+    "minecraft": "~1.21",
+    "java": ">=21"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "com.cosmicproximity.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "GameRendererAccessor",
+    "CameraAccessor",
+    "EntityRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
